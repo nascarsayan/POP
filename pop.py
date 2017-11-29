@@ -10,13 +10,13 @@ import copy
 
 boost = 5
 #depminimax = 5
-n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 1}
+n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 3}
 idx = {"Tree": 1, "Animal": 2, "Native": 3, "Poacher": 4, "Blank": 0}
 idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank"}
 health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 100, "Blank": 0}
 hit = {"Animal": {"Native": 25, "Poacher": 50}, "Native": {"Poacher": 10, "Tree": 30, "Animal": 50}, "Poacher": {"Native": 5, "Tree": 10, "Animal": 15}}
 blank = {"idx": 0, "health": 0}
-
+safelevel = 200
 
 # In[8]:
 def printBoard (board):
@@ -81,13 +81,12 @@ def evaluate(board, isplayer):
         if(isplayer):
             #print "Native's turn"
             score = 0
-            profit = [0]
             for i in range(len(board)):
                 for j in range(len(board[0])):
                     if(board[i][j]["idx"] == 3): #native identified
                         #print "Cell %d, %d" % (i, j)
                         cells = getReach2Cells(board, i, j)
-                        profit.append(0)
+                        profit = [0]
                         for cell in cells:
                             if(board[cell[0]][cell[1]]["idx"] == idx["Tree"] and cell[2] == 1): #tree at level 1
                                 score += boost
@@ -339,6 +338,9 @@ def main():
         print "\n @@@ Your move @@@\n"
         startPos = [int(x.strip()) for x in raw_input(" $--> Moving piece : ").split(",")]
         finishPos = [int(x.strip()) for x in raw_input(" $--> Target position : ").split(",")]
+        if (board[0][startPos[0]][startPos[1]]["idx"] != 3):
+            print ("\n!!! Illegal move ... not your piece!  Please try again\n\n", board[0])
+            continue
         print "\n\n"
         r = getReach2Cells(board, startPos[0], startPos[1])
         for u in r:
@@ -359,6 +361,10 @@ def main():
         printBoard (ret_Board)
         print "\n\n $--> Computer made move :\n\n %r -> [%d, %d]\n" % (ret_move[3], ret_move[0], ret_move[1])
         board = copy.deepcopy(ret_Board)
+        if (tothealth(board[0]) < safelevel):
+            print "You lose!!!"
+            return
+    print "You win!!!"
 
 if __name__ == '__main__':
     main()
