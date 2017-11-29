@@ -339,7 +339,7 @@ def main():
         startPos = [int(x.strip()) for x in raw_input(" $--> Moving piece : ").split(",")]
         finishPos = [int(x.strip()) for x in raw_input(" $--> Target position : ").split(",")]
         if (board[0][startPos[0]][startPos[1]]["idx"] != 3):
-            print ("\n!!! Illegal move ... not your piece!  Please try again\n\n", board[0])
+            print ("\n!!! Illegal move ... not your piece!  Please try again\n\n")
             continue
         print "\n\n"
         r = getReach2Cells(board, startPos[0], startPos[1])
