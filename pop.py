@@ -20,8 +20,55 @@ safelevel = 200
 
 # In[8]:
 def printBoard (board):
-    for row in board[0]:
-        print "%r, %r" % ([x["idx"] for x in row], [x["health"] for x in row])
+    bslash1 = '\  '
+    bslash2 = ' \ '
+    bslash3 = '  \\'
+    fslash1 = '  /'
+    fslash2 = ' / '
+    fslash3 = '/  '
+    print '  /\  ' * n["Row"]
+    print ' /  \ ' * n["Row"]
+    print '/    \\' * n["Row"]
+    for row in range (n["Row"]):
+        bslash1h = ''
+        bslash2h = ''
+        bslash3h = ''
+        fslash1h = ''
+        fslash2h = ''
+        fslash3h = ''
+        if row % 2 == 1:
+            print "  ",
+        for column in range (n["Row"]):
+            print "| %d,%d" % (row, column),
+        print "|"
+        if row % 2 == 1:
+            print "  ",
+        for column in range (n["Row"]):
+            here = idxrev[board[0][row][column]["idx"]][0]
+            if here == 'B':
+                here = ' '
+            print "|  %s " % here,
+        print "|"
+        if row % 2 == 1:
+            print "  ",
+        for column in range (n["Row"]):
+            heal = board[0][row][column]["health"]
+            if heal > 0:
+                print "| %03d" % heal,
+            else:
+                print "|    ",
+        print "|"
+        if row % 2 == 0:
+            bslash1h = bslash1
+            bslash2h = bslash2
+            bslash3h = bslash3
+        if row % 2 == 1:
+            fslash1h = fslash1
+            fslash2h = fslash2
+            fslash3h = fslash3
+        print bslash1h + '  /\  ' * n["Row"] + fslash1h
+        print bslash2h + ' /  \ ' * n["Row"] + fslash2h
+        print bslash3h + '/    \\' * n["Row"] + fslash3h
     m = tothealth(board[0])
     print ("\nCurrent Health: %d\n\n" %m)
 
@@ -149,8 +196,37 @@ def evaluate(board, isplayer):
 
 # In[11]:
 
+def environEffect(board):
+    remainMem = copy.deepcopy(board[1:])
+    for native in board[1]:
+        neighbors = getNeighbor(board[0], native[0], native[1])
+        for neigh in neighbors:
+            if board[0][neigh[0]][neigh[1]]["idx"] == idx["Animal"]:
+                board[0][native[0]][native[1]]["health"] -= hit["Animal"]["Native"]
+            if board[0][neigh[0]][neigh[1]]["idx"] == idx["Tree"]:
+                board[0][native[0]][native[1]]["health"] += boost
+        if (board[0][native[0]][native[1]]["health"] <= 0):
+            if neigh in remainMem[0]:
+                remainMem[0].remove(neigh)
+            board[0][native[0]][native[1]] = copy.deepcopy(blank)
+        if (board[0][native[0]][native[1]]["health"] > health["Native"]):
+            board[0][native[0]][native[1]]["health"] = health["Native"]
+    for poacher in board[2]:
+        neighbors = getNeighbor(board[0], poacher[0], poacher[1])
+        for neigh in neighbors:
+            if board[0][neigh[0]][neigh[1]]["idx"] == idx["Animal"]:
+                board[0][poacher[0]][poacher[1]]["health"] -= hit["Animal"]["Poacher"]
+        if (board[0][poacher[0]][poacher[1]]["health"] <= 0):
+            if neigh in remainMem[1]:
+                remainMem[1].remove(neigh)
+            board[0][poacher[0]][poacher[1]] = copy.deepcopy(blank)
+        if (board[0][native[0]][native[1]]["health"] > health["Poacher"]):
+            board[0][native[0]][native[1]]["health"] = health["Poacher"]
+    board[1] = copy.deepcopy(remainMem[0])
+    board[2] = copy.deepcopy(remainMem[1])
 
 def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
+
     try:
 
         deg = copy.deepcopy(finishPos)
@@ -198,8 +274,7 @@ def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
                     board[idx[idxUser]-2].remove(startPos)
                     board[idx[idxUser]-2].append(u)
 
-                return (board, True)
-            else:
+            else: #degree is 2
                 #print "deg[2] is not 1"
                 if (board[0][finishPos[0]][finishPos[1]]["idx"] == idx["Blank"]):
                     #if (idxUser == "Native"):
@@ -215,7 +290,8 @@ def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
                             board[1].remove(u)
                         if u in board[2]:
                             board[2].remove(u)
-                return (board, True)
+            environEffect(board)
+            return (board, True)
     except Exception as e:
         print e
         traceback.print_exc()
@@ -249,7 +325,7 @@ def init():
         for nCol in range(n["Row"]):
             row.append({"idx": 0, "health": 0})
         board.append(row)
-    pos = random.sample(range(36), n["Tot"])
+    pos = random.sample(range(n["Row"] * n["Row"]), n["Tot"])
     for iter in pos[:n["Tree"]]:
         board [iter / n["Row"]][iter % n["Row"]]["idx"] = idx["Tree"]
         board [iter / n["Row"]][iter % n["Row"]]["health"] = health["Tree"]
@@ -334,12 +410,28 @@ def main():
     board = init()
     print " $--> Initial board position\n\n"
     printBoard (board)
-    for turn in range(n["Turn"]):
+    turn = 0
+    illegal = 0
+    while turn < n["Turn"]:
+        if (illegal > 10):
+            print "Too many illegal moves! Aborting game"
+            return
         print "\n @@@ Your move @@@\n"
-        startPos = [int(x.strip()) for x in raw_input(" $--> Moving piece : ").split(",")]
-        finishPos = [int(x.strip()) for x in raw_input(" $--> Target position : ").split(",")]
+        try:
+            startPos = [int(x.strip()) for x in raw_input(" $--> Moving piece (x, y): ").split(",")]
+            finishPos = [int(x.strip()) for x in raw_input(" $--> Target position (x, y): ").split(",")]
+            if (len(startPos) != 2) or (len(finishPos) != 2):
+                print ("\nInvalid number of entries in co-ordinate! Illegal move! Please try again\n\n")
+                illegal += 1
+                continue
+        except Exception as e:
+            print e
+            print ("\nNon-numeric value entered! Illegal move! Please try again\n\n")
+            illegal += 1
+            continue
         if (board[0][startPos[0]][startPos[1]]["idx"] != 3):
-            print ("\n!!! Illegal move ... not your piece!  Please try again\n\n")
+            print ("\nNot your piece! Illegal move! Please try again\n\n")
+            illegal += 1
             continue
         print "\n\n"
         r = getReach2Cells(board, startPos[0], startPos[1])
@@ -352,7 +444,8 @@ def main():
         #print finishPos
         newBoard, success = checkMove(board, "Native", startPos, finishPos)
         if (not success):
-            print ("\n!!! Illegal move ! Please try again\n\n")
+            print ("\nIllegal move! Please try again\n\n")
+            illegal += 1
             continue
         printBoard(newBoard)
         board = copy.deepcopy(newBoard)
@@ -364,6 +457,7 @@ def main():
         if (tothealth(board[0]) < safelevel):
             print "You lose!!!"
             return
+        turn +=1
     print "You win!!!"
 
 if __name__ == '__main__':
