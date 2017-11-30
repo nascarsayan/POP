@@ -12,7 +12,7 @@ boost = 5
 #depminimax = 5
 n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 3}
 idx = {"Tree": 1, "Animal": 2, "Native": 3, "Poacher": 4, "Blank": 0}
-idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank"}
+idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank1}
 health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 100, "Blank": 0}
 hit = {"Animal": {"Native": 25, "Poacher": 50}, "Native": {"Poacher": 10, "Tree": 30, "Animal": 50}, "Poacher": {"Native": 5, "Tree": 10, "Animal": 15}}
 blank = {"idx": 0, "health": 0}
@@ -81,7 +81,7 @@ def getNeighbor(board, i, j):
     else:
         cell.extend(([i-1,j-1],[i+1,j-1]))
     for x in range(len(cell)):
-        if(cell[x][0]>=0 and cell[x][0] < len(board) and cell[x][1]>=0 and cell[x][1] < len(board[0])):
+        if(cell[x][0]>=0 and cell[x][0] < len(board) and cell[x][1]>=0 and cell[x][1] < len(board)):
             new_cell.append(cell[x])
     return new_cell
 
@@ -308,9 +308,12 @@ def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
             print [x["idx"] for x in row]
         for row in board[0]:
             print [x["health"] for x in row]
+        raise
         exit()
     #if (idxUser == "Native"):
         #print "Don't know why"
+    print "deg ", deg
+    print "neighbors ", neighbors
     return (oldBoard, False)
 
 # In[12]:
@@ -363,6 +366,8 @@ def MaxValuePoacher (board, depth):
             #print("Natives: ", board[1])
             #print("Poachers: ", board[2])
             #print("tc1: ", h, h[0], h[1], board[0][h[0]][h[1]]["idx"])
+            #print "At MaxValPoacher"
+            #printBoard(board)
             newBoard, success = checkMove(board, "Poacher", [h[0], h[1]], move)
             if (success):
                 #print "Move made %r %r" %( h, move)
@@ -396,6 +401,8 @@ def MaxValuePlayer (board, depth):
             #print("Natives: ", board[1])
             #print("Poachers: ", board[2])
             #print("tc2: ",h,  h[0], h[1], board[0][h[0]][h[1]]["idx"])
+            #print "At MaxValPlayer"
+            #printBoard(board)
             newBoard, success = checkMove(board, "Native", [h[0], h[1]], move)
             if (success):
                 #print "Move made %r %r"%( h, move)
@@ -434,7 +441,7 @@ def main():
             illegal += 1
             continue
         print "\n\n"
-        r = getReach2Cells(board, startPos[0], startPos[1])
+        r = getReach2Cells(board[0], startPos[0], startPos[1])
         for u in r:
             if (u[0:2] == finishPos):
                 finishPos = copy.deepcopy(u)
@@ -444,7 +451,7 @@ def main():
         #print finishPos
         newBoard, success = checkMove(board, "Native", startPos, finishPos)
         if (not success):
-            print ("\nIllegal move! Please try again\n\n")
+            print ("\nIllegal move for some reason! Please try again\n\n")
             illegal += 1
             continue
         printBoard(newBoard)
