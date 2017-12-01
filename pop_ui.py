@@ -57,7 +57,6 @@ def pygame_hex():
 def draw_canvas(board):
     index = 0
     myfont = pygame.font.SysFont("monospace", 20)
-    #gameDisplay.fill((0, 0, 0))
     for x, y in hex_centres():
         col = colours [board [0][index / ROWS][index % COLUMNS]['idx']]
         pygame.draw.polygon(gameDisplay, col, list(hex_points(x,y)))
@@ -67,6 +66,7 @@ def draw_canvas(board):
         index += 1
     msg_tothlh = "Total Health = %d" % tothealth(board[0])
     pygame.draw.polygon(gameDisplay, (0, 0, 0), [(BOARD_WIDTH + X_OFFSET_1, Y_OFFSET_1), (BOARD_WIDTH + X_OFFSET_2, Y_OFFSET_1), (BOARD_WIDTH + X_OFFSET_2, Y_OFFSET_2), (BOARD_WIDTH + X_OFFSET_1, Y_OFFSET_2)])
+
     label = myfont.render(msg_tothlh, 1, (255, 255, 255))
     gameDisplay.blit(label, (BOARD_WIDTH + 10, Y_OFFSET_1))
     pygame.display.update()
@@ -145,5 +145,4 @@ def uigame():
     quit()
 
 if __name__ == '__main__':
-    #uigame()
     uigame()
