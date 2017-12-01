@@ -10,7 +10,7 @@ import copy
 
 boost = 5
 #depminimax = 5
-n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 3}
+n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 1}
 idx = {"Tree": 1, "Animal": 2, "Native": 3, "Poacher": 4, "Blank": 0}
 idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank"}
 health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 100, "Blank": 0}
@@ -358,9 +358,13 @@ def MaxValuePoacher (board, depth):
         return (evaluate(board[0], True), evaluate(board[0], False))
     maxim = float("-inf")
     corrOppScore = maxim
-    for h in board[2]:
+    poachers = board[2]
+    for h in poachers:
         #print("tmc1: ", h)
-        for move in getReach2Cells (board[0], h[0], h[1]):
+        if h not in board[2]:
+            continue
+        places = getReach2Cells (board[0], h[0], h[1])
+        for move in places:
             #for row in board[0]:
                 #print ([(x["idx"], x["health"]) for x in row])
             #print("Natives: ", board[1])
@@ -368,6 +372,8 @@ def MaxValuePoacher (board, depth):
             #print("tc1: ", h, h[0], h[1], board[0][h[0]][h[1]]["idx"])
             #print "At MaxValPoacher"
             #printBoard(board)
+            if h not in board[2]:
+                continue
             newBoard, success = checkMove(board, "Poacher", [h[0], h[1]], move)
             if (success):
                 #print "Move made %r %r" %( h, move)
@@ -393,9 +399,13 @@ def MaxValuePlayer (board, depth):
     #print board[1:3]
     maxim = float("-inf")
     corrOppScore = maxim
-    for h in board[1]:
+    natives = board[1]
+    for h in natives:
+        if h not in board[1]:
+            continue
         #print("tmc2: ", h)
-        for move in getReach2Cells (board[0], h[0], h[1]):
+        places = getReach2Cells (board[0], h[0], h[1])
+        for move in places:
             #for row in board[0]:
                 #print ([(x["idx"], x["health"]) for x in row])
             #print("Natives: ", board[1])
@@ -403,6 +413,8 @@ def MaxValuePlayer (board, depth):
             #print("tc2: ",h,  h[0], h[1], board[0][h[0]][h[1]]["idx"])
             #print "At MaxValPlayer"
             #printBoard(board)
+            if h not in board[1]:
+                continue
             newBoard, success = checkMove(board, "Native", [h[0], h[1]], move)
             if (success):
                 #print "Move made %r %r"%( h, move)
