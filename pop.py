@@ -128,7 +128,7 @@ def evaluate(board, isplayer):
                             elif(board[cell[0]][cell[1]]["idx"] == idx["Poacher"]): #poacher at any level
                                 score -= hit["Poacher"]["Native"]
 
-                                temp = board[cell[0]][cell[1]]["health"]/hit["Native"]["Poacher"] #strikes remaining
+                                temp = math.ceil(board[cell[0]][cell[1]]["health"] * 1.0/hit["Native"]["Poacher"]) #strikes remaining
                                 profit.append(health["Poacher"]/temp)
 
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==1): #animal at level 1
@@ -145,16 +145,16 @@ def evaluate(board, isplayer):
                         profit=[0]
                         for cell in cells:
                             if(board[cell[0]][cell[1]]["idx"]== idx["Tree"] and cell[2]==1): #tree at level 1
-                                temp = board[cell[0]][cell[1]]["health"]/hit["Poacher"]["Tree"] #strikes remaining
+                                temp = math.ceil (board[cell[0]][cell[1]]["health"] * 1.0 /hit["Poacher"]["Tree"]) #strikes remaining
                                 profit.append(100 * health["Tree"]/temp)
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==2): #animal at level 2
-                                temp = board[cell[0]][cell[1]]["health"]/hit["Poacher"]["Animal"] #strikes remaining
+                                temp = math.ceil (board[cell[0]][cell[1]]["health"] * 1.0 / hit["Poacher"]["Animal"]) #strikes remaining
                                 profit.append(100 * health["Animal"]/temp)
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==1): #animal at level 1
                                 score -= hit["Animal"]["Poacher"]
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Native"]): #native at any level
                                 score -= hit["Native"]["Poacher"]
-                                temp = board[cell[0]][cell[1]]["health"]/hit["Poacher"]["Native"] #strikes remaining
+                                temp = math.ceil (board[cell[0]][cell[1]]["health"] * 1.0 /hit["Poacher"]["Native"]) #strikes remaining
                                 profit.append(100 * health["Native"]/temp)
                         temp = max(profit)
                         score += temp
