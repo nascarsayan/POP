@@ -425,7 +425,7 @@ def MaxValuePlayer (board, depth):
                     corrOppScore = poScore
     return (maxim, corrOppScore)
 
-def main():
+def asciigame():
     board = init()
     print " $--> Initial board position\n\n"
     printBoard (board)
@@ -480,4 +480,4 @@ def main():
     print "You win!!!"
 
 if __name__ == '__main__':
-    main()
+    asciigame()
