@@ -9,7 +9,7 @@ n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, 
 idx = {"Tree": 1, "Animal": 2, "Native": 3, "Poacher": 4, "Blank": 0}
 idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank"}
 health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 100, "Blank": 0}
-hit = {"Animal": {"Native": 25, "Poacher": 50}, "Native": {"Poacher": 10, "Tree": 30, "Animal": 50}, "Poacher": {"Native": 5, "Tree": 10, "Animal": 15}}
+hit = {"Animal": {"Native": 15, "Poacher": 25}, "Native": {"Poacher": 10, "Tree": 30, "Animal": 50}, "Poacher": {"Native": 15, "Tree": 15, "Animal": 20}}
 blank = {"idx": 0, "health": 0}
 safelevel = 200
 
@@ -147,12 +147,12 @@ def evaluate(board, isplayer):
                             if(board[cell[0]][cell[1]]["idx"]== idx["Tree"] and cell[2]==1): #tree at level 1
                                 temp = board[cell[0]][cell[1]]["health"]/hit["Poacher"]["Tree"] #strikes remaining
                                 profit.append(100 * health["Tree"]/temp)
-                            elif(board[cell[0]][cell[1]]["idx"]== 2 and cell[2]==2): #animal at level 2
+                            elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==2): #animal at level 2
                                 temp = board[cell[0]][cell[1]]["health"]/hit["Poacher"]["Animal"] #strikes remaining
                                 profit.append(100 * health["Animal"]/temp)
-                            elif(board[cell[0]][cell[1]]["idx"]== 2 and cell[2]==1): #animal at level 1
+                            elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==1): #animal at level 1
                                 score -= hit["Animal"]["Poacher"]
-                            elif(board[cell[0]][cell[1]]["idx"]== 3): #native at any level
+                            elif(board[cell[0]][cell[1]]["idx"]== idx["Native"]): #native at any level
                                 score -= hit["Native"]["Poacher"]
                                 temp = board[cell[0]][cell[1]]["health"]/hit["Poacher"]["Native"] #strikes remaining
                                 profit.append(100 * health["Native"]/temp)
@@ -179,9 +179,9 @@ def environEffect(board):
             if board[0][neigh[0]][neigh[1]]["idx"] == idx["Tree"]:
                 board[0][native[0]][native[1]]["health"] += boost
         if (board[0][native[0]][native[1]]["health"] <= 0):
-            if neigh in remainMem[0]:
-                remainMem[0].remove(neigh)
-            board[0][native[0]][native[1]] = copy.deepcopy(blank)
+            if native in remainMem[0]:
+                remainMem[0].remove(native)
+                board[0][native[0]][native[1]] = copy.deepcopy(blank)
         if (board[0][native[0]][native[1]]["health"] > health["Native"]):
             board[0][native[0]][native[1]]["health"] = health["Native"]
     for poacher in board[2]:
@@ -190,11 +190,9 @@ def environEffect(board):
             if board[0][neigh[0]][neigh[1]]["idx"] == idx["Animal"]:
                 board[0][poacher[0]][poacher[1]]["health"] -= hit["Animal"]["Poacher"]
         if (board[0][poacher[0]][poacher[1]]["health"] <= 0):
-            if neigh in remainMem[1]:
-                remainMem[1].remove(neigh)
-            board[0][poacher[0]][poacher[1]] = copy.deepcopy(blank)
-        if (board[0][native[0]][native[1]]["health"] > health["Poacher"]):
-            board[0][native[0]][native[1]]["health"] = health["Poacher"]
+            if poacher in remainMem[1]:
+                remainMem[1].remove(poacher)
+                board[0][poacher[0]][poacher[1]] = copy.deepcopy(blank)
     board[1] = copy.deepcopy(remainMem[0])
     board[2] = copy.deepcopy(remainMem[1])
 

@@ -8,7 +8,7 @@ h_THETA = pi / 6.0
 ROWS = 6
 COLUMNS = 6
 IMAGE_HEIGHT = int(SIDE * (ROWS + 1 + (ROWS - 1) * cos (THETA)) + 0.5)
-IMAGE_WIDTH = int(SIDE * sin (THETA) * (2 * COLUMNS + 1) + 0.5)
+IMAGE_WIDTH = int(SIDE * sin (THETA) * (2 * COLUMNS + 1) + 0.5) + 500
 
 colours = {0: (192, 192, 192), 1: (0, 255, 0), 2: (255, 165, 0), 3: (0, 0, 255), 4: (255, 0, 0)}
 gameQuit = False
@@ -95,6 +95,7 @@ def uigame():
     illegal = 0
     board = init()
     draw_canvas(board)
+    printBoard(board)
     while turn < n["Turn"]:
         if (illegal > 10):
             print "Too many illegal moves! Aborting game"
@@ -115,11 +116,13 @@ def uigame():
             illegal += 1
             continue
         draw_canvas (newBoard)
+        printBoard (newBoard)
         board = copy.deepcopy(newBoard)
         print "Natives, Poachers = ", board[1:]
         print "\n\n $--> Computer's move\n\n"
         ret_Board, ret_move = MaxValuePoacher(board, 0)
         draw_canvas (ret_Board)
+        printBoard (ret_Board)
         print "\n\n $--> Computer made move :\n\n %r -> [%d, %d]\n" % (ret_move[3], ret_move[0], ret_move[1])
         board = copy.deepcopy(ret_Board)
         print "Natives, Poachers = ", board[1:]
