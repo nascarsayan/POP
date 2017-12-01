@@ -108,7 +108,7 @@ def tothealth(board):
             if board[i][j]["idx"] != idx["Poacher"]:
                 hlth += board[i][j]["health"]
             else:
-                hlth += (5 * (100 - board[i][j]["health"]))
+                hlth += (5 * (health["Poacher"] - board[i][j]["health"]))
     return hlth
 
 def evaluate(board, isplayer):

@@ -8,7 +8,8 @@ h_THETA = pi / 6.0
 ROWS = 6
 COLUMNS = 6
 IMAGE_HEIGHT = int(SIDE * (ROWS + 1 + (ROWS - 1) * cos (THETA)) + 0.5)
-IMAGE_WIDTH = int(SIDE * sin (THETA) * (2 * COLUMNS + 1) + 0.5) + 500
+BOARD_WIDTH = int(SIDE * sin (THETA) * (2 * COLUMNS + 1) + 0.5)
+IMAGE_WIDTH = BOARD_WIDTH + 300
 
 colours = {0: (192, 192, 192), 1: (0, 255, 0), 2: (255, 165, 0), 3: (0, 0, 255), 4: (255, 0, 0)}
 gameQuit = False
@@ -60,6 +61,9 @@ def draw_canvas(board):
         label = myfont.render(str(board [0][index / ROWS][index % COLUMNS]['health']), 1, (255, 255, 255))
         gameDisplay.blit(label, (x-5, y-5))
         index += 1
+    msg_tothlh = "Total Health = %d" % tothealth(board[0])
+    label = myfont.render(msg_tothlh, 1, (255, 255, 255))
+    gameDisplay.blit(label, (BOARD_WIDTH + 10, 100))
     pygame.display.update()
 
 def get_cell_no(coord):
