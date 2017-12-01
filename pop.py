@@ -313,6 +313,9 @@ def MaxValuePoacher (board, depth):
                     maxim = poScore
                     corrOppScore = plScore
     if depth == 0:
+        if len(board[2]) == 0:
+            print "You win!!!"
+            quit()
         return (nextBoard, bestmove)
     return (maxim, corrOppScore)
 
