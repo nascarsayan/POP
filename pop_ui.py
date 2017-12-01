@@ -46,13 +46,17 @@ def pygame_colours():
 def pygame_hex():
     '''Requires PyGame 1.8 or better to save as PNG'''
     pygame.init()
-    screen = pygame.display.set_mode((IMAGE_WIDTH, IMAGE_HEIGHT))
+    myfont = pygame.font.SysFont("monospace", 20)
+    screen = pygame.display.set_mode((BOARD_WIDTH, IMAGE_HEIGHT))
     colours = pygame_colours()
+    index = 0
     for x,y in hex_centres():
-        print x,y
         pygame.draw.polygon(screen, colours.next(), list(hex_points(x,y)))
         pygame.draw.polygon(screen, (0,0,0), list(hex_points(x,y)), 5)
-    pygame.image.save(screen, 'pygame_hexes.png')
+        label = myfont.render(str(((index / ROWS), (index % COLUMNS))), 1, (0, 0, 0))
+        gameDisplay.blit(label, (x-35, y-10))
+        index += 1
+    pygame.image.save(screen, 'empty_board.png')
 
 def draw_canvas(board):
     index = 0
@@ -62,7 +66,7 @@ def draw_canvas(board):
         pygame.draw.polygon(gameDisplay, col, list(hex_points(x,y)))
         pygame.draw.polygon(gameDisplay, (0,0,0), list(hex_points(x,y)), 5)
         label = myfont.render(str(board [0][index / ROWS][index % COLUMNS]['health']), 1, (255, 255, 255))
-        gameDisplay.blit(label, (x-5, y-5))
+        gameDisplay.blit(label, (x-10, y-10))
         index += 1
     msg_tothlh = "Total Health = %d" % tothealth(board[0])
     pygame.draw.polygon(gameDisplay, (0, 0, 0), [(BOARD_WIDTH + X_OFFSET_1, Y_OFFSET_1), (BOARD_WIDTH + X_OFFSET_2, Y_OFFSET_1), (BOARD_WIDTH + X_OFFSET_2, Y_OFFSET_2), (BOARD_WIDTH + X_OFFSET_1, Y_OFFSET_2)])
@@ -87,7 +91,8 @@ def get_user_move(gameQuit):
     while not (gameQuit or flposGiven):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                gameQuit = True
+                pygame.quit()
+                quit()
             elif stposGiven and event.type == pygame.MOUSEBUTTONDOWN:
                 finishPos = get_cell_no(pygame.mouse.get_pos())
                 print "Final Position given"
@@ -104,6 +109,7 @@ def uigame():
     illegal = 0
     board = init()
     draw_canvas(board)
+    pygame.image.save(gameDisplay, 'full_house.png')
     printBoard(board)
     while turn < n["Turn"]:
         if (illegal > 10):
@@ -146,3 +152,4 @@ def uigame():
 
 if __name__ == '__main__':
     uigame()
+    #pygame_hex()

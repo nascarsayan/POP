@@ -171,7 +171,7 @@ def evaluate(board, isplayer):
 
 def environEffect(board):
     remainMem = copy.deepcopy(board[1:])
-    print "Env effect : " + remainMem,
+    print "Env effect : ", remainMem
     for native in board[1]:
         neighbors = getNeighbor(board[0], native[0], native[1])
         for neigh in neighbors:
@@ -196,7 +196,7 @@ def environEffect(board):
                 board[0][poacher[0]][poacher[1]] = copy.deepcopy(blank)
     board[1] = copy.deepcopy(remainMem[0])
     board[2] = copy.deepcopy(remainMem[1])
-    print remainMem
+    print "\n\t\t", remainMem
 
 def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
     try:
