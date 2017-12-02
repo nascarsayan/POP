@@ -5,7 +5,7 @@ import math
 import copy
 
 boost = 5
-n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 1}
+n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 30, "depMiniMax": 1}
 idx = {"Tree": 1, "Animal": 2, "Native": 3, "Poacher": 4, "Blank": 0}
 idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank"}
 health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 200, "Blank": 0}
@@ -80,26 +80,19 @@ def getNeighbor(board, i, j):
     return new_cell
 
 def getReach2Cells(board, i, j):
-    temp1 = getNeighbor(board,i,j)
-    temp2=[]
-    for each_elem in temp1:
-        temp = getNeighbor(board,each_elem[0], each_elem[1])
-        for e in temp:
-            temp2.append(e)
-    cells=[]
-    temp1.append([i,j])
-    for each in temp2:
-        if ((each not in cells) and (each not in temp1)):
-            cells.append(each)
-    temp1.remove([i,j])
-    for each in temp1:
-        cells.append(each)
-    for x in range(len(cells)):
-        if cells[x] in temp1:
-            cells[x].append(1)
-        else:
-            cells[x].append(2)
-    return cells
+    degree1 = getNeighbor(board, i, j)
+    degree2 = []
+    for neighbor in degree1:
+        degree2.extend(getNeighbor(board, neighbor[0], neighbor[1]))
+    degree2 = [list(ele) for ele in set(tuple(ele) for ele in degree2)]
+    degree2.remove([i, j])
+    degree2 = [ele for ele in degree2 if ele not in degree1 and board[ele[0]][ele[1]]["idx"]!= idx["Blank"]]
+    for x in range(len(degree1)):
+        degree1[x].append(1)
+    for x in range(len(degree2)):
+        degree2[x].append(2)
+    degree1.extend(degree2)
+    return degree1
 
 def tothealth(board):
     hlth = 0
@@ -129,7 +122,7 @@ def evaluate(board, isplayer):
                                 score -= hit["Poacher"]["Native"]
 
                                 temp = math.ceil(board[cell[0]][cell[1]]["health"] * 1.0/hit["Native"]["Poacher"]) #strikes remaining
-                                profit.append(health["Poacher"]/temp)
+                                profit.append(100 * health["Poacher"]/temp)
 
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==1): #animal at level 1
                                 score -= hit["Animal"]["Native"]
@@ -146,10 +139,10 @@ def evaluate(board, isplayer):
                         for cell in cells:
                             if(board[cell[0]][cell[1]]["idx"]== idx["Tree"] and cell[2]==1): #tree at level 1
                                 temp = math.ceil (board[cell[0]][cell[1]]["health"] * 1.0 /hit["Poacher"]["Tree"]) #strikes remaining
-                                profit.append(100 * health["Tree"]/temp)
+                                profit.append(200 * health["Tree"]/temp)
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==2): #animal at level 2
                                 temp = math.ceil (board[cell[0]][cell[1]]["health"] * 1.0 / hit["Poacher"]["Animal"]) #strikes remaining
-                                profit.append(100 * health["Animal"]/temp)
+                                profit.append(150 * health["Animal"]/temp)
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Animal"] and cell[2]==1): #animal at level 1
                                 score -= hit["Animal"]["Poacher"]
                             elif(board[cell[0]][cell[1]]["idx"]== idx["Native"]): #native at any level
@@ -198,7 +191,7 @@ def environEffect(board):
     board[2] = copy.deepcopy(remainMem[1])
     # print "\n\t\t", remainMem
 
-def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
+def checkMove(oldBoard, idxUser, startPos, finishPos):
     try:
 
         deg = copy.deepcopy(finishPos)
@@ -318,6 +311,9 @@ def MaxValuePoacher (board, depth):
         if len(board[2]) == 0:
             print "You win!!!"
             quit()
+        if len(board[1]) == 0:
+            print "You lose!!!"
+            quit()
         return (nextBoard, bestmove)
     return (maxim, corrOppScore)
 
@@ -342,6 +338,7 @@ def MaxValuePlayer (board, depth):
 
 def asciigame():
     board = init()
+    print board
     print " $--> Initial board position\n\n"
     printBoard (board)
     turn = 0

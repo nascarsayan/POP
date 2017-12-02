@@ -122,7 +122,7 @@ def uigame():
     board = init()
     draw_canvas(board)
     draw_legend()
-    pygame.image.save(gameDisplay, 'full_house.png')
+    #pygame.image.save(gameDisplay, 'full_house.png')
     while turn < n["Turn"]:
         if (illegal > 10):
             print "Too many illegal moves! Aborting game"
@@ -143,9 +143,11 @@ def uigame():
             print ("\nIllegal move for some reason! Please try again\n\n")
             illegal += 1
             continue
+        #print newBoard
         draw_canvas (newBoard)
         board = copy.deepcopy(newBoard)
         ret_Board, ret_move = MaxValuePoacher(board, 0)
+        #print ret_Board
         draw_canvas (ret_Board)
         print "\n\n $--> Computer made move :\n\n %r -> [%d, %d]\n" % (ret_move[3], ret_move[0], ret_move[1])
         board = copy.deepcopy(ret_Board)
