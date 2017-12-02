@@ -1,4 +1,4 @@
-
+#! /usr/bin/env python2
 import traceback
 import random
 import math
@@ -8,10 +8,10 @@ boost = 5
 n = {"Tree": 7, "Animal": 3, "Native": 2, "Poacher": 2, "Blank": 22, "Tot": 14, "Row": 6, "Turn": 20, "depMiniMax": 1}
 idx = {"Tree": 1, "Animal": 2, "Native": 3, "Poacher": 4, "Blank": 0}
 idxrev = { 1:"Tree", 2:"Animal", 3:"Native", 4:"Poacher", 0:"Blank"}
-health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 100, "Blank": 0}
+health = {"Tree": 30, "Animal": 45, "Native": 50, "Poacher": 200, "Blank": 0}
 hit = {"Animal": {"Native": 15, "Poacher": 25}, "Native": {"Poacher": 10, "Tree": 30, "Animal": 50}, "Poacher": {"Native": 15, "Tree": 15, "Animal": 20}}
 blank = {"idx": 0, "health": 0}
-safelevel = 200
+safelevel = 300
 
 def printBoard (board):
     bslash1 = '\  '
@@ -107,8 +107,8 @@ def tothealth(board):
         for j in range(len(board[0])):
             if board[i][j]["idx"] != idx["Poacher"]:
                 hlth += board[i][j]["health"]
-            else:
-                hlth += (5 * (health["Poacher"] - board[i][j]["health"]))
+            #else:
+                #hlth += (5 * (health["Poacher"] - board[i][j]["health"]))
     return hlth
 
 def evaluate(board, isplayer):
@@ -171,7 +171,7 @@ def evaluate(board, isplayer):
 
 def environEffect(board):
     remainMem = copy.deepcopy(board[1:])
-    print "Env effect : ", remainMem
+    # print "Env effect : ", remainMem
     for native in board[1]:
         neighbors = getNeighbor(board[0], native[0], native[1])
         for neigh in neighbors:
@@ -196,7 +196,7 @@ def environEffect(board):
                 board[0][poacher[0]][poacher[1]] = copy.deepcopy(blank)
     board[1] = copy.deepcopy(remainMem[0])
     board[2] = copy.deepcopy(remainMem[1])
-    print "\n\t\t", remainMem
+    # print "\n\t\t", remainMem
 
 def checkMove(oldBoard, idxUser, startPos, finishPos, plantTree = 0):
     try:
@@ -380,7 +380,7 @@ def asciigame():
             continue
         printBoard(newBoard)
         board = copy.deepcopy(newBoard)
-        print "\n\n $--> Computer's move\n\n"
+        print "\n\n @@@ Computer's move @@@\n\n"
         ret_Board, ret_move = MaxValuePoacher(board, 0)
         printBoard (ret_Board)
         print "\n\n $--> Computer made move :\n\n %r -> [%d, %d]\n" % (ret_move[3], ret_move[0], ret_move[1])

@@ -1,11 +1,13 @@
+#! /usr/bin/env python2
 from math import sin, cos, pi, sqrt
 import pygame
 from pop import *
-
+X_L1 = 50
+Y_L1 = 100
 X_OFFSET_1 = 10
-Y_OFFSET_1 = 100
+Y_OFFSET_1 = 600
 X_OFFSET_2 = 300
-Y_OFFSET_2 = 200
+Y_OFFSET_2 = 700
 SIDE = 70
 THETA = pi / 3.0
 h_THETA = pi / 6.0
@@ -95,26 +97,37 @@ def get_user_move(gameQuit):
                 quit()
             elif stposGiven and event.type == pygame.MOUSEBUTTONDOWN:
                 finishPos = get_cell_no(pygame.mouse.get_pos())
-                print "Final Position given"
+                print "->", finishPos
                 flposGiven = True
                 return startPos, finishPos
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 startPos = get_cell_no(pygame.mouse.get_pos())
-                print "Starting Position Given"
+                print startPos,
                 stposGiven = True
     return startPos, finishPos
+def draw_legend():
+    x = BOARD_WIDTH + X_L1
+    y = Y_L1
+    myfont = pygame.font.SysFont("monospace", 20)
+    for index in range(5):
+         pygame.draw.polygon(gameDisplay, colours[index], [(x, y), (x + 20, y), (x + 20, y + 20), (x, y + 20)])
+         label = myfont.render(idxrev[index], 1, (255, 255, 255))
+         gameDisplay.blit(label, (x + 50, y))
+         y += Y_L1
+    pygame.display.update()
 
 def uigame():
     turn = 0
     illegal = 0
     board = init()
     draw_canvas(board)
+    draw_legend()
     pygame.image.save(gameDisplay, 'full_house.png')
-    printBoard(board)
     while turn < n["Turn"]:
         if (illegal > 10):
             print "Too many illegal moves! Aborting game"
             return
+        print "\n @@@ Your move @@@\n"
         startPos, finishPos = get_user_move(gameQuit)
         r = getReach2Cells(board[0], startPos[0], startPos[1])
         if (board[0][startPos[0]][startPos[1]]["idx"] != 3):
@@ -131,16 +144,11 @@ def uigame():
             illegal += 1
             continue
         draw_canvas (newBoard)
-        printBoard (newBoard)
         board = copy.deepcopy(newBoard)
-        print "Natives, Poachers = ", board[1:]
-        print "\n\n $--> Computer's move\n\n"
         ret_Board, ret_move = MaxValuePoacher(board, 0)
         draw_canvas (ret_Board)
-        printBoard (ret_Board)
         print "\n\n $--> Computer made move :\n\n %r -> [%d, %d]\n" % (ret_move[3], ret_move[0], ret_move[1])
         board = copy.deepcopy(ret_Board)
-        print "Natives, Poachers = ", board[1:]
         if (tothealth(board[0]) < safelevel):
             print "You lose!!!"
             return

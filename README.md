@@ -79,3 +79,9 @@ Since the board is randomly initialized, there is no fixed character placement. 
 
 ### Character Animantion
 * There is not much animation in the game, as of now. The only movement, which might seem to be animation, is the spontaneous movement of the characters from one cell to another.
+
+### Instructions
+* To start terminal based game, run the file `pop.py` with python2. From project's root folder run:
+`python2 ./pop.py`
+* To start the more interactive ui version of the game, run `pop_ui.py`. From the root folder of the project run:
+`python2 ./pop_ui.py`.  
