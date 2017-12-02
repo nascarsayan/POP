@@ -337,56 +337,60 @@ def MaxValuePlayer (board, depth):
     return (maxim, corrOppScore)
 
 def asciigame():
-    board = init()
-    print board
-    print " $--> Initial board position\n\n"
-    printBoard (board)
-    turn = 0
-    illegal = 0
-    while turn < n["Turn"]:
-        if (illegal > 10):
-            print "Too many illegal moves! Aborting game"
-            return
-        print "\n @@@ Your move @@@\n"
-        try:
-            startPos = [int(x.strip()) for x in raw_input(" $--> Moving piece (x, y): ").split(",")]
-            finishPos = [int(x.strip()) for x in raw_input(" $--> Target position (x, y): ").split(",")]
-            if (len(startPos) != 2) or (len(finishPos) != 2):
-                print ("\nInvalid number of entries in co-ordinate! Illegal move! Please try again\n\n")
+    try:
+        board = init()
+        print " %%%%%% Start Game! Press Ctrl + C to Quit anytime...\n $--> Initial board position\n\n"
+        printBoard (board)
+        turn = 0
+        illegal = 0
+        while turn < n["Turn"]:
+            if (illegal > 10):
+                print "Too many illegal moves! Aborting game"
+                return
+            print "\n @@@ Your move @@@\n"
+            try:
+                startPos = [int(x.strip()) for x in raw_input(" $--> Moving piece (x, y): ").split(",")]
+                finishPos = [int(x.strip()) for x in raw_input(" $--> Target position (x, y): ").split(",")]
+                if (len(startPos) != 2) or (len(finishPos) != 2):
+                    print ("\n Invalid number of entries in co-ordinate! Illegal move! Please try again\n")
+                    illegal += 1
+                    continue
+            except Exception as e:
+                print e
+                print ("\n Non-numeric value entered! Illegal move! Please try again\n")
                 illegal += 1
                 continue
-        except Exception as e:
-            print e
-            print ("\nNon-numeric value entered! Illegal move! Please try again\n\n")
-            illegal += 1
-            continue
-        if (board[0][startPos[0]][startPos[1]]["idx"] != 3):
-            print ("\nNot your piece! Illegal move! Please try again\n\n")
-            illegal += 1
-            continue
-        print "\n\n"
-        r = getReach2Cells(board[0], startPos[0], startPos[1])
-        for u in r:
-            if (u[0:2] == finishPos):
-                finishPos = copy.deepcopy(u)
-                break
-        newBoard, success = checkMove(board, "Native", startPos, finishPos)
-        if (not success):
-            print ("\nIllegal move for some reason! Please try again\n\n")
-            illegal += 1
-            continue
-        printBoard(newBoard)
-        board = copy.deepcopy(newBoard)
-        print "\n\n @@@ Computer's move @@@\n\n"
-        ret_Board, ret_move = MaxValuePoacher(board, 0)
-        printBoard (ret_Board)
-        print "\n\n $--> Computer made move :\n\n %r -> [%d, %d]\n" % (ret_move[3], ret_move[0], ret_move[1])
-        board = copy.deepcopy(ret_Board)
-        if (tothealth(board[0]) < safelevel):
-            print "You lose!!!"
-            return
-        turn +=1
-    print "You win!!!"
+            if (board[0][startPos[0]][startPos[1]]["idx"] != 3):
+                print ("\n Not your piece! Illegal move! Please try again\n")
+                illegal += 1
+                continue
+            r = getReach2Cells(board[0], startPos[0], startPos[1])
+            for u in r:
+                if (u[0:2] == finishPos):
+                    finishPos = copy.deepcopy(u)
+                    break
+            newBoard, success = checkMove(board, "Native", startPos, finishPos)
+            if (not success):
+                print ("\n Illegal move for some reason! Please try again\n")
+                illegal += 1
+                continue
+            print ""
+            printBoard(newBoard)
+            print " %r -> %r" % (startPos, finishPos[:2])
+            board = copy.deepcopy(newBoard)
+            print "\n @@@ Computer's move @@@\n"
+            ret_Board, ret_move = MaxValuePoacher(board, 0)
+            printBoard (ret_Board)
+            print " %r -> [%d, %d]" % (ret_move[3], ret_move[0], ret_move[1])
+            board = copy.deepcopy(ret_Board)
+            if (tothealth(board[0]) < safelevel):
+                print " You lose!!!"
+                return
+            turn +=1
+        print " You win!!!"
+    except KeyboardInterrupt as e:
+        print "\n Quiting Game Now! Sayonara!"
+        quit()
 
 if __name__ == '__main__':
     asciigame()
