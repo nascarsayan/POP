@@ -68,10 +68,10 @@ Since the board is randomly initialized, there is no fixed character placement. 
 | Colour | Character Type |
 | ------ | --------------:|
 | Silver | Empty Cell     |
-| Green  | Plant          |
+| Green  | Tree           |
 | Orange | Animal         |
 | Blue   | Native         |
-| Red    | Pacher         |
+| Red    | Poacher        |
 
 ### Character Movement
 * A valid move of a character is from the cell where it's present to any of the empty adjacent cells, i.e., cells which share a common edge (and are inside the board).
