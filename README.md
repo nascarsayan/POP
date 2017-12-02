@@ -36,7 +36,7 @@ The only controls used for user interaction with the game environment is mouse c
   - tree --> `30`
   - animal --> `45`
   - native --> `50`
-  - poacher --> `100`
+  - poacher --> `200`
 * Tree heals :
   - native --> `+5`
 * Animal attacks :
@@ -50,7 +50,7 @@ The only controls used for user interaction with the game environment is mouse c
   - native --> `-15`
   - tree --> `-15`
   - animal --> `-20`
-* The *safe level* of health is an aggregate of 200 health points.
+* The *safe level* of health is an aggregate of 300 health points.
 * The maximum number of turns played is 20.
 * The game ends with a win for the player, if maximum number of turns has been made and the total health has not decreased below a certain limit or both the poachers are dead.
 * The game ends with a loss for the player, if the total health of the environment goes below  the *safe level*.
