@@ -24,35 +24,58 @@ The only controls used for user interaction with the game environment is mouse c
 
 ### Brief Game Rules
 
-1.  The mobile characters in our game world can move in any of the six directions corresponding to the six sides of the hexagonal tiles and one step at once.
-
-2.  Poachers can attack every other character namely trees, animals, natives.
-
-3.  Natives can attack poachers and animals, trees (when there's no other choice).
-
-4.  Animals can attack both poachers and natives.
-
-5.  Health points of a character indicate amount of life(health) left in the character.
-
-6.  Initial health points of the characters are : Poachers (100) , Animal (45), Native(50), Tree(30).
-
-7.  Hit points indicate the amount of loss of health points of the prey during an attack event.
-
-8.  Hit points when animal is the attacker and prey is native is 15, when prey is poacher is 25.
-
-9.  Hit points when poacher is the attacker and prey is native is 15, when prey is tree is 15, when prey is animal is 20.
-
-10. Hit points when native is the attacker and prey is poacher is 10, when prey is tree is 30, when prey is animal is 50.
-
-11. No attacker can attack their prey from a distance more than distance two hexagonal tiles.
-
-12. Animals can attack their prey only when it is one hexagonal tile away.
+* The board is a `6 X 6` hex-grid.
+* There are four kinds of characters : `(Tree, Animal, Native, Poacher)` on the board.
+* A valid movement of a mobile character is from a hex-cell to any of the adjacent hex-cells sharing a common edge.
+* The board is randomly initialized with `7` trees, `3` animals, `2` natives and `2` poachers. All other cells are empty.
+* The total health of the system is a measure of how balanced the ecology is. Attack on any character causes a decrease in health point for the character, and hence the total health of the system decreases, except for the poachers.
+* Trees heal natives at adjacent cells, and increase their corresponding health point.
+* Animals attack the mobile characters (natives and poachers) at adjacent cells and decrease their corresponding health point.
+* Both natives and poachers can attack any other character, except their own kin, at 2 valid moves away. The attack of native on plants and animals is highly discouraged, however, since it kills them in one shot, and affects the environment heavily.
+* The initial health of the characters are :
+  - tree --> `30`
+  - animal --> `45`
+  - native --> `50`
+  - poacher --> `100`
+* Tree heals :
+  - native --> `+5`
+* Animal attacks :
+  - native --> `-15`
+  - poacher --> `-20`
+* Native can attack :
+  - poacher --> `-10`
+  - tree --> `-30`
+  - animal --> `-50`
+* Poachers can attack :
+  - native --> `-15`
+  - tree --> `-15`
+  - animal --> `-20`
+* The *safe level* of health is an aggregate of 200 health points.
+* The maximum number of turns played is 20.
+* The game ends with a win for the player, if maximum number of turns has been made and the total health has not decreased below a certain limit or both the poachers are dead.
+* The game ends with a loss for the player, if the total health of the environment goes below  the *safe level*.
 
 ### AI Implementaion
-- To do
+* The core of the AI is a variance of minimax (maximax, if we go by the name). Since the game is not zero-sum, this has to be applied.
+* A board position is evaluated (given a score) on the basis of the possible movements for the concerned character and threats to the same. A tentative score is given by taking into account the attack on each poacher (native) by surrounding animals and natives (poachers), and the healing effect of the trees on natives.
 
 ### Character Placement
+Since the board is randomly initialized, there is no fixed character placement. However, the cardinal numbers of each of the characters is fixed:  `7` trees, `3` animals, `2` natives and `2` poachers. A board generated randomly looks like this :
+
+![board_image]( ./full_house.png)
+
+#### Colour as legend
+| Colour | Character Type |
+| ------ | --------------:|
+| Silver | Empty Cell     |
+| Green  | Plant          |
+| Orange | Animal         |
+| Blue   | Native         |
+| Red    | Pacher         |
 
 ### Character Movement
+* A valid move of a character is from the cell where it's present to any of the empty adjacent cells, i.e., cells which share a common edge (and are inside the board).
+* Both natives and poachers can attack characters of other type, which are at most 2 moves (distance) away. This decreases the health of the character there. Also, if the attacked character loses its health completely and is present at an adjacent cell, the attacker moves directly into the cell.
 
 ### Character Animantion
+* There is not much animation in the game, as of now. The only movement, which might seem to be animation, is the spontaneous movement of the characters from one cell to another.
