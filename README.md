@@ -55,7 +55,7 @@ The only controls used for user interaction with the game environment is mouse c
 * The game ends with a win for the player, if maximum number of turns has been made and the total health has not decreased below a certain limit or both the poachers are dead.
 * The game ends with a loss for the player, if the total health of the environment goes below  the *safe level*.
 
-### AI Implementaion
+### AI Implementation
 * The core of the AI is a variance of minimax (maximax, if we go by the name). Since the game is not zero-sum, this has to be applied.
 * A board position is evaluated (given a score) on the basis of the possible movements for the concerned character and threats to the same. A tentative score is given by taking into account the attack on each poacher (native) by surrounding animals and natives (poachers), and the healing effect of the trees on natives.
 
@@ -84,4 +84,4 @@ Since the board is randomly initialized, there is no fixed character placement. 
 * To start terminal based game, run the file `pop.py` with python2. From project's root folder run:
 `python2 ./pop.py`
 * To start the more interactive ui version of the game, run `pop_ui.py`. From the root folder of the project run:
-`python2 ./pop_ui.py`.  
+`python2 ./pop_ui.py`.
