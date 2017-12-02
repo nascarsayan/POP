@@ -31,7 +31,7 @@ The only controls used for user interaction with the game environment is mouse c
 * The total health of the system is a measure of how balanced the ecology is. Attack on any character causes a decrease in health point for the character, and hence the total health of the system decreases, except for the poachers.
 * Trees heal natives at adjacent cells, and increase their corresponding health point.
 * Animals attack the mobile characters (natives and poachers) at adjacent cells and decrease their corresponding health point.
-* Both natives and poachers can attack any other character, except their own kin, at 2 valid moves away. The attack of native on plants and animals is highly discouraged, however, since it kills them in one shot, and affects the environment heavily.
+* Both natives and poachers can attack any other character, except their own kin, at `2` valid moves away. The attack of native on plants and animals is highly discouraged, however, since it kills them in one shot, and affects the environment heavily.
 * The initial health of the characters are :
   - tree --> `30`
   - animal --> `45`
@@ -50,8 +50,8 @@ The only controls used for user interaction with the game environment is mouse c
   - native --> `-15`
   - tree --> `-15`
   - animal --> `-20`
-* The *safe level* of health is an aggregate of 300 health points.
-* The maximum number of turns played is 20.
+* The *safe level* of health is an aggregate of `300` health points.
+* The maximum number of turns played is `30`.
 * The game ends with a win for the player, if maximum number of turns has been made and the total health has not decreased below a certain limit or both the poachers are dead.
 * The game ends with a loss for the player, if the total health of the environment goes below  the *safe level*.
 
